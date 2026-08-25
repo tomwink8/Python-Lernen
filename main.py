@@ -26,3 +26,7 @@ def zeige_produkte():
 
 
 zeige_produkte()
+
+def addierePreise():
+    gesamtpreis = sum(produkt['preis'] for produkt in produkte)
+    print(f"Gesamtpreis aller Produkte: {gesamtpreis:.2f} €")
