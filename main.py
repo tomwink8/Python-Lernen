@@ -30,3 +30,6 @@ zeige_produkte()
 def berechne_gesamtpreis():
     gesamtpreis = sum(produkt['preis'] for produkt in produkte)
     return gesamtpreis
+
+gesamtpreis = berechne_gesamtpreis()
+print(f"Gesamtpreis: {gesamtpreis:.2f} €")
