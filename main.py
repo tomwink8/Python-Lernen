@@ -1,9 +1,4 @@
-name = input("Wie heißt du? ")
-
-print(f"Hallo {name}!")
-print("Ich lerne gerade Python und Git.") 
-
-
+# Produktdatenbank
 produkte = [
     {
         "name": "Apfel",
@@ -24,7 +19,10 @@ produkte = [
         "artikel": "die"
     }
 ]
+# Warenkorb
+warenkorb = []
 
+# Funktionen
 def kaufartikel(artikel):
     if artikel == "der":
         return "einen"
@@ -37,89 +35,92 @@ def zeige_produkte():
     for produkt in produkte:
         print(f"{produkt['name']}: {produkt['preis']:.2f} €")
 
-
-zeige_produkte()
-
-#def berechne_gesamtpreis():
-    #gesamtpreis = sum(produkt['preis'] for produkt in produkte)
-    #return gesamtpreis
-
-#gesamtpreis = berechne_gesamtpreis()
-#print(f"Gesamtpreis: {gesamtpreis:.2f} €")
-
-warenkorb = []
-
 def kaufe_produkt():
-    produktname = input("Welches Produkt möchtest du kaufen? ")
+    while True:
+        produktname = input("Welches Produkt möchtest du kaufen? ")
 
-    for produkt in produkte:
-        if produkt["name"].lower() == produktname.lower():
+        for produkt in produkte:
+            if produkt["name"].lower() == produktname.lower():
 
-            menge = int(input("Wie viele möchtest du kaufen? "))
+                while True:
+                    try:
+                        menge = int(input("Wie viele möchtest du kaufen? "))
 
-            for artikel in warenkorb:
-                if artikel["name"] == produkt["name"]:
-                    artikel["menge"] += menge
+                        if menge > 0:
+                            break
 
-                    if menge == 1:
-                        kaufartikel_text = kaufartikel(produkt["artikel"])
-                        print(f"Du hast {kaufartikel_text} {produkt['name']} gekauft.")
-                    else:
-                        print(f"Du hast {menge} weitere {produkt['plural']} gekauft.")
+                        print("Bitte gib eine Zahl größer als 0 ein.")
 
-                    return
+                    except ValueError:
+                        print("Bitte gib eine gültige Zahl ein.")
 
-            warenkorb.append({
-                "name": produkt["name"],
-                "plural": produkt["plural"],
-                "preis": produkt["preis"],
-                "artikel": produkt["artikel"],
-                "menge": menge
-            })
+                bereits_im_warenkorb = False
 
-            if menge == 1:
-                kaufartikel_text = kaufartikel(produkt["artikel"])
-                print(f"Du hast {kaufartikel_text} {produkt['name']} gekauft.")
-            else:
-                print(f"Du hast {menge} {produkt['plural']} gekauft.")
+                for artikel in warenkorb:
+                    if artikel["name"] == produkt["name"]:
+                        artikel["menge"] += menge
+                        bereits_im_warenkorb = True
+                        break
 
-            return
+                if not bereits_im_warenkorb:
+                    warenkorb.append({
+                        "name": produkt["name"],
+                        "plural": produkt["plural"],
+                        "preis": produkt["preis"],
+                        "artikel": produkt["artikel"],
+                        "menge": menge
+                    })
 
-    print("Produkt nicht gefunden.")
-            
+                if menge == 1:
+                    kaufartikel_text = kaufartikel(produkt["artikel"])
+                    print(f"Du hast {kaufartikel_text} {produkt['name']} gekauft.")
+                else:
+                    print(f"Du hast {menge} {produkt['plural']} gekauft.")
 
-    
+                return
 
-weiter = "ja"
+        print("Produkt nicht gefunden. Verfügbare Produkte:")
+        zeige_produkte()
 
-while weiter != "nein":
-    kaufe_produkt()
+def frage_weiter():
+    weiter = "ja"
 
-    weiter = input("Möchtest du noch etwas kaufen? ").lower()
+    while weiter != "nein":
+        kaufe_produkt()
 
-    while weiter != "ja" and weiter != "nein":
-        print('Bitte antworte mit "ja" oder "nein".')
         weiter = input("Möchtest du noch etwas kaufen? ").lower()
 
+        while weiter != "ja" and weiter != "nein":
+            print('Bitte antworte mit "ja" oder "nein".')
+            weiter = input("Möchtest du noch etwas kaufen? ").lower()
 
+def zeige_warenkorb():
+    print("\nWarenkorb:")
 
-print("\nWarenkorb:")
-
-for produkt in warenkorb:
-    gesamt = produkt["preis"] * produkt["menge"]
-    print(f"{produkt['menge']}x {produkt['name']} - {gesamt:.2f} €")
-
-    
+    for produkt in warenkorb:
+        gesamt = produkt["preis"] * produkt["menge"]
+        print(f"{produkt['menge']}x {produkt['name']} - {gesamt:.2f} €")
 
 def berechne_gesamtpreis():
-
-    gesamtpreis = sum(
+    return sum(
         produkt["preis"] * produkt["menge"]
         for produkt in warenkorb
     )
 
-    return gesamtpreis
+
+# Hauptprogramm
+name = input("Wie heißt du? ")
+
+print(f"Hallo {name}!")
+print("Ich lerne gerade Python und Git.") 
+
+zeige_produkte()
+
+frage_weiter()
+
+zeige_warenkorb()
 
 gesamtpreis = berechne_gesamtpreis()
 print(f"Gesamtpreis: {gesamtpreis:.2f} €")
+
     
