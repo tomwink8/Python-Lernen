@@ -51,31 +51,57 @@ def kaufe_produkt():
 
     for produkt in produkte:
         if produkt["name"].lower() == produktname.lower():
-            warenkorb.append(produkt)
 
-            artikel = kaufartikel(produkt["artikel"])
-            print(f"Du hast {artikel} {produkt['name']} für {produkt['preis']:.2f} € gekauft.")
+            menge = int(input("Wie viele möchtest du kaufen? "))
+
+            # Prüfen, ob das Produkt bereits im Warenkorb ist
+            for artikel in warenkorb:
+                if artikel["name"] == produkt["name"]:
+                    artikel["menge"] += menge
+                    print(f"Du hast {menge} weitere {produkt['name']} gekauft.")
+                    return
+
+            # Wenn das Produkt noch nicht im Warenkorb ist
+            warenkorb.append({
+                "name": produkt["name"],
+                "preis": produkt["preis"],
+                "artikel": produkt["artikel"],
+                "menge": menge
+            })
+
+            print(f"Du hast {menge} {produkt['name']} gekauft.")
             return
 
     print("Produkt nicht gefunden.")
+            
+
+    
 
 weiter = "ja"
 
 while weiter != "nein":
     kaufe_produkt()
+
     weiter = input("Möchtest du noch etwas kaufen? ").lower()
 
-
+    while weiter != "ja" and weiter != "nein":
+        print('Bitte antworte mit "ja" oder "nein".')
+        weiter = input("Möchtest du noch etwas kaufen? ").lower()
 
 print("\nWarenkorb:")
 
 for produkt in warenkorb:
-    print(f"{produkt['name']} - {produkt['preis']:.2f} €")
+    einzelpreis = produkt["preis"]
+    menge = produkt["menge"]
+    gesamt = einzelpreis * menge
 
+    print(f"{menge}x {produkt['name']} - {gesamt:.2f} €")
 
 def berechne_gesamtpreis():
-    gesamtpreis = sum(produkt['preis'] for produkt in warenkorb)
-    return gesamtpreis
+    gesamtpreis = sum(
+        produkt["preis"] * produkt["menge"]
+        for produkt in warenkorb
+    )
 
-gesamtpreis = berechne_gesamtpreis()
-print(f"Gesamtpreis: {gesamtpreis:.2f} €")
+    return gesamtpreis
+    
