@@ -40,6 +40,32 @@ class Warenkorb:
     def gesamtpreis(self):
         return sum(artikel.gesamtpreis() for artikel in self.artikel)
 
+    def zeige_warenkorb(self):
+        print("\nWarenkorb:")
+
+        for artikel in self.artikel:
+            print(
+                f"{artikel.menge}x "
+                f"{artikel.produkt.name} - "
+                f"{artikel.gesamtpreis():.2f} €"
+            )
+
+    def hinzufuegen(self, produkt, menge):
+        for artikel in self.artikel:
+            if artikel.produkt.name == produkt.name:
+                artikel.menge += menge
+                return
+
+        self.artikel.append(WarenkorbArtikel(produkt, menge))
+
+    def entfernen(self, produktname):
+        for artikel in self.artikel:
+            if artikel.produkt.name.lower() == produktname.lower():
+                self.artikel.remove(artikel)
+                return True
+
+        return False
+
 warenkorb = Warenkorb()
 
 # Funktionen
@@ -66,16 +92,7 @@ def kaufe_produkt():
                     except ValueError:
                         print("Bitte gib eine gültige Zahl ein.")
 
-                bereits_im_warenkorb = False
-
-                for artikel in warenkorb.artikel:
-                    if artikel.produkt.name == produkt.name:
-                        artikel.menge += menge
-                        bereits_im_warenkorb = True
-                        break
-
-                if not bereits_im_warenkorb:
-                    warenkorb.artikel.append(WarenkorbArtikel(produkt, menge))
+                warenkorb.hinzufuegen(produkt, menge)
 
                 if menge == 1:
                     kaufartikel_text = produkt.kaufartikel()
@@ -100,15 +117,13 @@ def frage_weiter():
             print('Bitte antworte mit "ja" oder "nein".')
             weiter = input("Möchtest du noch etwas kaufen? ").lower()
 
-def zeige_warenkorb():
-    print("\nWarenkorb:")
+def entferne_produkt():
+    produktname = input("Welchen Artikel möchtest du entfernen? ")
 
-    for artikel in warenkorb.artikel:
-        print(
-            f"{artikel.menge}x "
-            f"{artikel.produkt.name} - "
-            f"{artikel.gesamtpreis():.2f} €"
-        )
+    if warenkorb.entfernen(produktname):
+        print(f"{produktname} wurde aus dem Warenkorb entfernt.")
+    else:
+        print(f"{produktname} ist nicht im Warenkorb.")
 
 # Hauptprogramm
 name = input("Wie heißt du? ")
@@ -120,7 +135,9 @@ zeige_produkte()
 
 frage_weiter()
 
-zeige_warenkorb()
+entferne_produkt()
+
+warenkorb.zeige_warenkorb()
 
 gesamtpreis = warenkorb.gesamtpreis()
 print(f"Gesamtpreis: {gesamtpreis:.2f} €")
