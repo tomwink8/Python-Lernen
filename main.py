@@ -1,46 +1,58 @@
 # Produktdatenbank
+class Produkt:
+    def __init__(self, name, plural, preis, artikel):
+        self.name = name
+        self.plural = plural
+        self.preis = preis
+        self.artikel = artikel
+
+    def kaufartikel(self):
+        if self.artikel == "der":
+            return "einen"
+        elif self.artikel == "die":
+            return "eine"
+        elif self.artikel == "das":
+            return "ein"
+
+    def beschreibung(self):
+        return f"{self.name}: {self.preis:.2f} €"
+
 produkte = [
-    {
-        "name": "Apfel",
-        "plural": "Äpfel",
-        "preis": 1.99,
-        "artikel": "der"
-    },
-    {
-        "name": "Gurke",
-        "plural": "Gurken",
-        "preis": 0.99,
-        "artikel": "die"
-    },
-    {
-        "name": "Banane",
-        "plural": "Bananen",
-        "preis": 2.49,
-        "artikel": "die"
-    }
+    Produkt("Apfel", "Äpfel", 1.99, "der"),
+    Produkt("Gurke", "Gurken", 0.99, "die"),
+    Produkt("Banane", "Bananen", 2.49, "die")
 ]
+
+
 # Warenkorb
-warenkorb = []
+class WarenkorbArtikel:
+    def __init__(self, produkt, menge):
+        self.produkt = produkt
+        self.menge = menge
+
+    def gesamtpreis(self):
+        return self.produkt.preis * self.menge
+
+class Warenkorb:
+    def __init__(self):
+        self.artikel = []
+
+    def gesamtpreis(self):
+        return sum(artikel.gesamtpreis() for artikel in self.artikel)
+
+warenkorb = Warenkorb()
 
 # Funktionen
-def kaufartikel(artikel):
-    if artikel == "der":
-        return "einen"
-    elif artikel == "die":
-        return "eine"
-    elif artikel == "das":
-        return "ein"
-
 def zeige_produkte():
     for produkt in produkte:
-        print(f"{produkt['name']}: {produkt['preis']:.2f} €")
+        print(produkt.beschreibung())
 
 def kaufe_produkt():
     while True:
         produktname = input("Welches Produkt möchtest du kaufen? ")
 
         for produkt in produkte:
-            if produkt["name"].lower() == produktname.lower():
+            if produkt.name.lower() == produktname.lower():
 
                 while True:
                     try:
@@ -56,26 +68,20 @@ def kaufe_produkt():
 
                 bereits_im_warenkorb = False
 
-                for artikel in warenkorb:
-                    if artikel["name"] == produkt["name"]:
-                        artikel["menge"] += menge
+                for artikel in warenkorb.artikel:
+                    if artikel.produkt.name == produkt.name:
+                        artikel.menge += menge
                         bereits_im_warenkorb = True
                         break
 
                 if not bereits_im_warenkorb:
-                    warenkorb.append({
-                        "name": produkt["name"],
-                        "plural": produkt["plural"],
-                        "preis": produkt["preis"],
-                        "artikel": produkt["artikel"],
-                        "menge": menge
-                    })
+                    warenkorb.artikel.append(WarenkorbArtikel(produkt, menge))
 
                 if menge == 1:
-                    kaufartikel_text = kaufartikel(produkt["artikel"])
-                    print(f"Du hast {kaufartikel_text} {produkt['name']} gekauft.")
+                    kaufartikel_text = produkt.kaufartikel()
+                    print(f"Du hast {kaufartikel_text} {produkt.name} gekauft.")
                 else:
-                    print(f"Du hast {menge} {produkt['plural']} gekauft.")
+                    print(f"Du hast {menge} {produkt.plural} gekauft.")
 
                 return
 
@@ -97,16 +103,12 @@ def frage_weiter():
 def zeige_warenkorb():
     print("\nWarenkorb:")
 
-    for produkt in warenkorb:
-        gesamt = produkt["preis"] * produkt["menge"]
-        print(f"{produkt['menge']}x {produkt['name']} - {gesamt:.2f} €")
-
-def berechne_gesamtpreis():
-    return sum(
-        produkt["preis"] * produkt["menge"]
-        for produkt in warenkorb
-    )
-
+    for artikel in warenkorb.artikel:
+        print(
+            f"{artikel.menge}x "
+            f"{artikel.produkt.name} - "
+            f"{artikel.gesamtpreis():.2f} €"
+        )
 
 # Hauptprogramm
 name = input("Wie heißt du? ")
@@ -120,7 +122,7 @@ frage_weiter()
 
 zeige_warenkorb()
 
-gesamtpreis = berechne_gesamtpreis()
+gesamtpreis = warenkorb.gesamtpreis()
 print(f"Gesamtpreis: {gesamtpreis:.2f} €")
 
     
