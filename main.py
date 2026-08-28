@@ -58,10 +58,18 @@ class Warenkorb:
 
         self.artikel.append(WarenkorbArtikel(produkt, menge))
 
-    def entfernen(self, produktname):
+    def entfernen(self, produktname, menge):
         for artikel in self.artikel:
             if artikel.produkt.name.lower() == produktname.lower():
-                self.artikel.remove(artikel)
+
+                if menge > artikel.menge:
+                    return artikel.menge
+
+                if menge < artikel.menge:
+                    artikel.menge -= menge
+                else:
+                    self.artikel.remove(artikel)
+
                 return True
 
         return False
@@ -90,7 +98,7 @@ def kaufe_produkt():
                         print("Bitte gib eine Zahl größer als 0 ein.")
 
                     except ValueError:
-                        print("Bitte gib eine gültige Zahl ein.")
+                        print("Bittclass Warenkorb:e gib eine gültige Zahl ein.")
 
                 warenkorb.hinzufuegen(produkt, menge)
 
@@ -118,12 +126,52 @@ def frage_weiter():
             weiter = input("Möchtest du noch etwas kaufen? ").lower()
 
 def entferne_produkt():
+    while True:
+        entfernen = input("Möchtest du einen Artikel entfernen? ").lower()
+
+        if entfernen == "nein":
+            return
+
+        if entfernen == "ja":
+            break
+
+        print('Bitte antworte mit "ja" oder "nein".')
+
     produktname = input("Welchen Artikel möchtest du entfernen? ")
 
-    if warenkorb.entfernen(produktname):
-        print(f"{produktname} wurde aus dem Warenkorb entfernt.")
-    else:
+    artikel_gefunden = False
+
+    for artikel in warenkorb.artikel:
+        if artikel.produkt.name.lower() == produktname.lower():
+            artikel_gefunden = True
+            break
+
+    if not artikel_gefunden:
         print(f"{produktname} ist nicht im Warenkorb.")
+        return
+
+    while True:
+        try:
+            menge = int(input("Wie viele möchtest du entfernen? "))
+
+            if menge > 0:
+                break
+
+            print("Bitte gib eine Zahl größer als 0 ein.")
+
+        except ValueError:
+            print("Bitte gib eine gültige Zahl ein.")
+
+    ergebnis = warenkorb.entfernen(produktname, menge)
+
+    if ergebnis is True:
+        print(f"{menge}x {produktname} wurde aus dem Warenkorb entfernt.")
+
+    elif ergebnis is False:
+        print(f"{produktname} ist nicht im Warenkorb.")
+
+    else:
+        print(f"Du hast nur {ergebnis}x {produktname} im Warenkorb.")
 
 # Hauptprogramm
 name = input("Wie heißt du? ")
