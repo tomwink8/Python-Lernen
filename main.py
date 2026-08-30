@@ -150,8 +150,8 @@ def entferne_produkt():
     produktname = input("Welchen Artikel möchtest du entfernen? ")
 
     if not warenkorb.enthaelt(produktname):
-    print(f"{produktname} ist nicht im Warenkorb.")
-    return
+        print(f"{produktname} ist nicht im Warenkorb.")
+        return
 
     while True:
         try:
