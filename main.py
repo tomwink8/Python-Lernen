@@ -35,15 +35,25 @@ class WarenkorbArtikel:
 
 class Warenkorb:
     def __init__(self):
-        self.artikel = []
+        self._artikel = []
+
+    def ist_leer(self):
+        return len(self._artikel) == 0
+
+    def enthaelt(self, produktname):
+        for artikel in self._artikel:
+            if artikel.produkt.name.lower() == produktname.lower():
+                return True
+
+        return False
 
     def gesamtpreis(self):
-        return sum(artikel.gesamtpreis() for artikel in self.artikel)
+        return sum(artikel.gesamtpreis() for artikel in self._artikel)
 
     def zeige_warenkorb(self):
         print("\nWarenkorb:")
 
-        for artikel in self.artikel:
+        for artikel in self._artikel:
             print(
                 f"{artikel.menge}x "
                 f"{artikel.produkt.name} - "
@@ -51,15 +61,15 @@ class Warenkorb:
             )
 
     def hinzufuegen(self, produkt, menge):
-        for artikel in self.artikel:
+        for artikel in self._artikel:
             if artikel.produkt.name == produkt.name:
                 artikel.menge += menge
                 return
 
-        self.artikel.append(WarenkorbArtikel(produkt, menge))
+        self._artikel.append(WarenkorbArtikel(produkt, menge))
 
     def entfernen(self, produktname, menge):
-        for artikel in self.artikel:
+        for artikel in self._artikel:
             if artikel.produkt.name.lower() == produktname.lower():
 
                 if menge > artikel.menge:
@@ -68,7 +78,7 @@ class Warenkorb:
                 if menge < artikel.menge:
                     artikel.menge -= menge
                 else:
-                    self.artikel.remove(artikel)
+                    self._artikel.remove(artikel)
 
                 return True
 
@@ -139,16 +149,9 @@ def entferne_produkt():
 
     produktname = input("Welchen Artikel möchtest du entfernen? ")
 
-    artikel_gefunden = False
-
-    for artikel in warenkorb.artikel:
-        if artikel.produkt.name.lower() == produktname.lower():
-            artikel_gefunden = True
-            break
-
-    if not artikel_gefunden:
-        print(f"{produktname} ist nicht im Warenkorb.")
-        return
+    if not warenkorb.enthaelt(produktname):
+    print(f"{produktname} ist nicht im Warenkorb.")
+    return
 
     while True:
         try:
@@ -185,9 +188,10 @@ frage_weiter()
 
 entferne_produkt()
 
-warenkorb.zeige_warenkorb()
-
-gesamtpreis = warenkorb.gesamtpreis()
-print(f"Gesamtpreis: {gesamtpreis:.2f} €")
+if warenkorb.ist_leer():
+    print("\nDer Warenkorb ist leer.")
+else:
+    warenkorb.zeige_warenkorb()
+    print(f"Gesamtpreis: {warenkorb.gesamtpreis():.2f} €")
 
     
