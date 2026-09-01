@@ -23,6 +23,10 @@ produkte = [
     Produkt("Banane", "Bananen", 2.49, "die")
 ]
 
+class DigitalesProdukt(Produkt):
+    def __init__(self, name, preis, dateityp):
+        super().__init__(name, "", preis, "das")
+        self.dateityp = dateityp
 
 # Warenkorb
 class WarenkorbArtikel:
