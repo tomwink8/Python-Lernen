@@ -1,0 +1,20 @@
+[
+    {
+        "name": "Apfel",
+        "plural": "Äpfel",
+        "preis": 1.99,
+        "artikel": "der"
+    },
+    {
+        "name": "Gurke",
+        "plural": "Gurken",
+        "preis": 0.99,
+        "artikel": "die"
+    },
+    {
+        "name": "Banane",
+        "plural": "Bananen",
+        "preis": 2.49,
+        "artikel": "die"
+    }
+]

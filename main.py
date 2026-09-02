@@ -1,6 +1,14 @@
 from produkt import Produkt
 from warenkorb import Warenkorb
 
+import json
+
+with open("produkte.json", "r", encoding="utf-8") as datei:
+    daten = json.load(datei)
+
+for produkt in daten:
+    print(produkt["name"])
+
 
 # Produktdatenbank
 produkte = [
